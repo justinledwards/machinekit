@@ -29,7 +29,7 @@ from math import sin, cos, pi
 import os
 from argparse import ArgumentParser
     
-DEF_RADIUS = 80
+DEF_RADIUS = 120
 DEF_Z_DEPTH = 7
 DEF_DIR = "configs/ARM/BeagleBone/CRAMPS/delta"
 DEF_G_CODE_BASE = 70

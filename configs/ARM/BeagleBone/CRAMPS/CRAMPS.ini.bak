@@ -2,12 +2,12 @@
 DRIVER=hal_pru_generic
 CONFIG=pru=1 num_stepgens=4 num_pwmgens=6
 PRUBIN=rtlib/xenomai/pru_generic.bin
-#330 - 50 - 25 = delta_r
-#280 - 50 - 25 = 205
+
+
 [EMC]
 
 # Name of machine, for use with display, etc.
-MACHINE =               LinearDelta
+MACHINE =               Makerfarmi3-CRAMPS
 
 # Debug level, 0 means no messages. See src/emc/nml_int/emcglb.h for others
 #DEBUG =                0x00000003
@@ -15,21 +15,14 @@ MACHINE =               LinearDelta
 DEBUG = 0
 
 
-[MACHINE]
-
-# Machine configuration for delta printer
-
-DELTA_R = 255
-
-CF_ROD = 492
 
 
 [DISPLAY]
 
 # Name of display program, e.g., tkemc
-DISPLAY = tkemc
+#DISPLAY = tkemc
 #DISPLAY = gscreen
-#DISPLAY = axis
+DISPLAY = axis
 
 # Touchy currently won't work without some hardware buttons/jog-wheel
 #DISPLAY = touchy
@@ -47,7 +40,7 @@ POSITION_OFFSET =       RELATIVE
 POSITION_FEEDBACK =     ACTUAL
 
 # Highest value that will be allowed for feed override, 1.0 = 100%
-MAX_FEED_OVERRIDE =     5.0
+MAX_FEED_OVERRIDE =     1.5
 
 # Prefix to be used
 PROGRAM_PREFIX = ../../../nc_files/
@@ -87,14 +80,6 @@ CYCLE_TIME =            0.010
 # File containing interpreter variables
 PARAMETER_FILE =        pru-stepper.var
 
-SUBROUTINE_PATH = delta
-
-# Add Delta-specific G7x codes to go to calibration positions
-# See http://www.linuxcnc.org/docs/devel/html/remap/structure.html#_a_definition_remapping_codes
-REMAP=G70 ngc=g70 modalgroup=1
-REMAP=G71 ngc=g71 modalgroup=1
-REMAP=G72 ngc=g72 modalgroup=1
-REMAP=G79 ngc=g79 modalgroup=1
 
 
 
@@ -122,7 +107,7 @@ SERVO_PERIOD =          1000000
 # list of hal config files to run through halcmd
 # files are executed in the order in which they appear
 
-HALFILE =		CRAMPS.lineardelta.hal
+HALFILE =		CRAMPS.hal
 
 # list of halcmd commands to execute
 # commands are executed in the order in which they appear
@@ -141,30 +126,10 @@ LINEAR_UNITS =          mm
 ANGULAR_UNITS =         degree
 CYCLE_TIME =            0.010
 DEFAULT_VELOCITY = 20.00
-MAX_LINEAR_VELOCITY = 250.00
+MAX_LINEAR_VELOCITY = 200.00
 
 
-# Steps/mm numbers are set for a standard Kossel:
-# http://reprap.org/wiki/Kossel
-# Using:
-#  16-tooth GT2 belt
-#  200 steps/rev motors
-#  16x microstepping
-# Yields 100 steps/mm.
-#
-# 2mm/tooth * 16 tooth/rev = 32mm/rev
-# (16*200 steps / rev) * (1 rev / 32mm) =  100 steps/mm
-#
-# Positive 'scale' causes counter-clockwise motion when looking at the shaft,
-# when the plug is connected with the exposed pin bits facing outwards
-# (with red wire nearer to the switches side of the board).
-#
-# To have the carriage home with up motion, we set 'scale' negative.
-# Then, a positive axis motion moves the carriage up.
-#
-# Example max step rates:
-# 100 mm/s * 100 steps/mm = 10K steps/sec
-# 500 mm/s * 100 setps/mm = 50K steps/sec
+
 
 
 [AXIS_0]
@@ -183,100 +148,80 @@ MAX_LINEAR_VELOCITY = 250.00
 
 
 TYPE =              LINEAR
-MAX_VELOCITY =       120.0
-MAX_ACCELERATION =   4000.0
+MAX_VELOCITY =       200.0
+MAX_ACCELERATION =   3000.0
 # Set Stepgen max 20% higher than the axis
-STEPGEN_MAX_VEL =    144.0
-STEPGEN_MAX_ACC =    4800.0
+STEPGEN_MAX_VEL =    240.0
+STEPGEN_MAX_ACC =    3600.0
 
 BACKLASH =           0.000
 
 # scale is 200 steps/rev * 5 revs/inch
-SCALE =  -100
+SCALE =  160
 
-MIN_LIMIT =             -10.0
-MAX_LIMIT =             1405.0
+MIN_LIMIT =             -1.0
+MAX_LIMIT =             220.0
 
 FERROR =     1.0
 MIN_FERROR = 0.25
 
-# If this axis is lower, subtract from H/HO.
-# If this axis is higher, add to H/HO.
-#HOME =  1324.5
-#HOME_OFFSET =  1324.5
-HOME =  1224.5
-HOME_OFFSET =  1224.5
-#HOME_IGNORE_LIMITS =    YES
-HOME_USE_INDEX =        NO
-HOME_SEQUENCE = 0
+HOME =                  0.000
+HOME_OFFSET =           0.00
+HOME_IGNORE_LIMITS =    YES
+#HOME_USE_INDEX =        NO
+HOME_SEQUENCE =         0
 
 # Set to zero if you don't have physical home/limit switches
-# Set to the desired homing and latch velocity if you have switches
+1# Set to the desired homing and latch velocity if you have switches
 # See: http://www.linuxcnc.org/docs/2.5/html/config/ini_homing.html
-HOME_SEARCH_VEL =       -25.0
+HOME_SEARCH_VEL =       -10.0
 HOME_LATCH_VEL =        10.0
 
-# these are in nanoseconds for Allegro A4988
-#DIRSETUP   =              200
-#DIRHOLD    =              200
-#STEPLEN    =              1000
-#STEPSPACE  =              1000
+# these are in nanoseconds
+DIRSETUP   =              200
+DIRHOLD    =              200
+STEPLEN    =              1000
+STEPSPACE  =              1000
 
-# these are in nanoseconds for DRV8825
-DIRSETUP   =              650
-DIRHOLD    =              650
-STEPLEN    =              1900
-STEPSPACE  =              1900
 
 
 
 [AXIS_1]
 
 TYPE =              LINEAR
-MAX_VELOCITY =       120.0
-MAX_ACCELERATION =   4000.0
+MAX_VELOCITY =       200.0
+MAX_ACCELERATION =   3000.0
 # Set Stepgen max 20% higher than the axis
-STEPGEN_MAX_VEL =    144.0
-STEPGEN_MAX_ACC =    4800.0
+STEPGEN_MAX_VEL =    240.0
+STEPGEN_MAX_ACC =    3600.0
 
 BACKLASH =           0.000
 
-# scale is 200 steps/rev * 5 revs/inch
-SCALE =  -100
+SCALE =  -160.0
 
-MIN_LIMIT =             -10.0
-MAX_LIMIT =             1405.0
+MIN_LIMIT =             -1.0
+MAX_LIMIT =             250.0
 
 FERROR =     1.0
 MIN_FERROR = 0.25
 
-# If this axis is lower, subtract from H/HO.
-# If this axis is higher, add to H/HO.
-#HOME =  1327.1
-#HOME_OFFSET =  1327.1
-HOME =  1227.1
-HOME_OFFSET =  1227.1
-#HOME_IGNORE_LIMITS =    YES
-HOME_USE_INDEX =        NO
-HOME_SEQUENCE = 0
+HOME =                  0.000
+HOME_OFFSET =           0.00
+HOME_IGNORE_LIMITS =    YES
+#HOME_USE_INDEX =        NO
+HOME_SEQUENCE =         0
 
 # Set to zero if you don't have physical home/limit switches
 # Set to the desired homing and latch velocity if you have switches
 # See: http://www.linuxcnc.org/docs/2.5/html/config/ini_homing.html
-HOME_SEARCH_VEL =       -25.0
+HOME_SEARCH_VEL =       -10.0
 HOME_LATCH_VEL =        10.0
 
-# these are in nanoseconds for Allegro A4988
-#DIRSETUP   =              200
-#DIRHOLD    =              200
-#STEPLEN    =              1000
-#STEPSPACE  =              1000
-
-# these are in nanoseconds for DRV8825
-DIRSETUP   =              650
-DIRHOLD    =              650
-STEPLEN    =              1900
-STEPSPACE  =              1900
+# these are in nanoseconds
+DIRSETUP   =              200
+DIRHOLD    =              200
+STEPLEN    =              1000
+STEPSPACE  =              1000
 
 
 
@@ -284,50 +229,40 @@ STEPSPACE  =              1900
 [AXIS_2]
 
 TYPE =              LINEAR
-MAX_VELOCITY =       120.0
-MAX_ACCELERATION =   4000.0
+MAX_VELOCITY =      3.0
+MAX_ACCELERATION =  80.0
 # Set Stepgen max 20% higher than the axis
-STEPGEN_MAX_VEL =    144.0
-STEPGEN_MAX_ACC =    4800.0
+STEPGEN_MAX_VEL =    3.6
+STEPGEN_MAX_ACC =    88.0
 
 BACKLASH =           0.000
 
-# scale is 200 steps/rev * 5 revs/inch
-SCALE =  -100
-
+#SCALE = 1511.81102362
+#SCALE = 130048
+SCALE = 8000
 MIN_LIMIT =             -10.0
-MAX_LIMIT =             1405.0
+MAX_LIMIT =             200.0
 
 FERROR =     1.0
 MIN_FERROR = 0.25
 
-# If this axis is lower, subtract from H/HO.
-# If this axis is higher, add to H/HO.
-#HOME =  1323.0
-#HOME_OFFSET =  1323.0
-HOME =  1223.0
-HOME_OFFSET =  1223.0
-#HOME_IGNORE_LIMITS =    YES
-HOME_USE_INDEX =        NO
-HOME_SEQUENCE = 0
+HOME =                  0.000
+HOME_OFFSET =           0.00
+HOME_IGNORE_LIMITS =    YES
+#HOME_USE_INDEX =        NO
+HOME_SEQUENCE =         1
 
 # Set to zero if you don't have physical home/limit switches
 # Set to the desired homing and latch velocity if you have switches
 # See: http://www.linuxcnc.org/docs/2.5/html/config/ini_homing.html
-HOME_SEARCH_VEL =       -25.0
-HOME_LATCH_VEL =        10.0
+HOME_SEARCH_VEL =       -10.0
+HOME_LATCH_VEL =        1.0
 
-# these are in nanoseconds for Allegro A4988
-#DIRSETUP   =              200
-#DIRHOLD    =              200
-#STEPLEN    =              1000
-#STEPSPACE  =              1000
-
-# these are in nanoseconds for DRV8825
-DIRSETUP   =              650
-DIRHOLD    =              650
-STEPLEN    =              1900
-STEPSPACE  =              1900
+# these are in nanoseconds
+DIRSETUP   =              200
+DIRHOLD    =              200
+STEPLEN    =              1000
+STEPSPACE  =              1000
 
 
 
@@ -335,17 +270,17 @@ STEPSPACE  =              1900
 [AXIS_3]
 
 TYPE = ANGULAR
-MAX_VELOCITY = 60
-MAX_ACCELERATION = 2000.0
+MAX_VELOCITY = 200
+MAX_ACCELERATION = 3000.0
 # Set Stepgen max 20% higher than the axis
-STEPGEN_MAX_VEL = 72
-STEPGEN_MAX_ACC = 2400.0
+STEPGEN_MAX_VEL = 240.0
+STEPGEN_MAX_ACC = 3600.0
 
 BACKLASH =           0.000
 
-# BDH: set for the RichRap Rostock extruder,
-# a modified Greg's Wade.  Uses Printrbot injection-molded gears, 16x MS.
-SCALE = -10.1
+#SCALE = -744.530002058
+SCALE = -744.0
+#SCALE = -732.32
 
 MIN_LIMIT = -9999.0
 MAX_LIMIT = 999999999.0
@@ -353,17 +288,17 @@ MAX_LIMIT = 999999999.0
 FERROR = 1.0
 MIN_FERROR = .25
 
-HOME =  1222.5
-HOME_OFFSET =  1222.5
-#HOME_IGNORE_LIMITS =    YES
-#HOME_USE_INDEX =        YES
+HOME =                  0.000
+HOME_OFFSET =           0.00
+HOME_IGNORE_LIMITS =    YES
+#HOME_USE_INDEX =        NO
 HOME_SEQUENCE =         0
 
 # Set to zero if you don't have physical home/limit switches
 # Set to the desired homing and latch velocity if you have switches
 # See: http://www.linuxcnc.org/docs/2.5/html/config/ini_homing.html
-#HOME_SEARCH_VEL =       0.0
-#HOME_LATCH_VEL =        0.0
+HOME_SEARCH_VEL =       0.0
+HOME_LATCH_VEL =        0.0
 
 # these are in nanoseconds
 DIRSETUP   =              200
@@ -383,4 +318,34 @@ CYCLE_TIME =            0.100
 
 # tool table file
 TOOL_TABLE =            tool.tbl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
